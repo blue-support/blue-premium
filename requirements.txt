@@ -1,0 +1,6 @@
+
+Flask
+requests
+stripe
+psycopg[binary]
+gunicorn
