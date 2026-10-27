@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blue Premium Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="/">🔷 BLUE <span>PREMIUM</span></a>
+    <div class="nav-actions">
+      <span>{{ user.global_name }}</span>
+      <a class="nav-button" href="/logout">Abmelden</a>
+    </div>
+  </nav>
+
+  <main class="dashboard">
+    <div class="eyebrow">DEIN ACCOUNT</div>
+    <h1>Premium-Dashboard</h1>
+    <p class="lead">Verwalte dein Blue-Abonnement an einem Ort.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <section class="panel">
+      <div>
+        <div class="muted">DISCORD ACCOUNT</div>
+        <h2>{{ user.global_name }}</h2>
+        <p>Discord-ID: {{ user.id }}</p>
+      </div>
+      {% if sub and sub.status == 'active' %}
+        <span class="status active">● Premium aktiv</span>
+      {% else %}
+        <span class="status inactive">● Kein aktives Premium</span>
+      {% endif %}
+    </section>
+
+    {% if sub and sub.status == 'active' %}
+      <section class="panel">
+        <div>
+          <h2>Dein Abonnement</h2>
+          <p>0,99 € pro Monat</p>
+
+          {% if sub.cancel_at_period_end %}
+            <p>
+              Deine Kündigung ist vorgemerkt.
+              Premium bleibt bis zum Ende des bezahlten Zeitraums aktiv.
+            </p>
+          {% else %}
+            <p>Dein Abo verlängert sich monatlich, bis du kündigst.</p>
+          {% endif %}
+
+          {% if sub.current_period_end %}
+            <p>
+              Zeitraumende:
+              {{ sub.current_period_end.strftime('%d.%m.%Y um %H:%M UTC') }}
+            </p>
+          {% endif %}
+        </div>
+
+        {% if not sub.cancel_at_period_end %}
+          <form method="post" action="/cancel">
+            <button class="button danger" type="submit">
+              Abo kündigen
+            </button>
+          </form>
+        {% endif %}
+      </section>
+    {% else %}
+      <section class="panel purchase">
+        <div>
+          <div class="muted">MONATLICHES ABONNEMENT</div>
+          <h2>Blue Premium</h2>
+          <p>0,99 € pro Monat · Jederzeit kündbar</p>
+        </div>
+
+        {% if member == true %}
+          <form method="post" action="/checkout">
+            <button class="button" type="submit">
+              Premium abonnieren →
+            </button>
+          </form>
+        {% elif member == false %}
+          <div>
+            <p class="warning">
+              Du musst Mitglied unseres Discord-Servers sein,
+              um Premium kaufen zu können.
+            </p>
+            <a class="button secondary"
+               href="https://discord.com/channels/1315795487063801916">
+              Discord öffnen
+            </a>
+          </div>
+        {% else %}
+          <p class="warning">
+            Deine Servermitgliedschaft konnte nicht überprüft werden.
+            Ein Kauf ist momentan nicht möglich.
+          </p>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    <section class="features compact">
+      <div class="eyebrow">ENTHALTEN</div>
+      <h2>Premium-Features</h2>
+      <div class="grid">
+        {% for feature in features %}
+          <article class="feature">
+            <div class="check">✓</div>
+            <h3>{{ feature.name }}</h3>
+            <p>{{ feature.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© Blue Premium</span>
+    <span>Powered by Blue ⚡</span>
+  </footer>
+</body>
+</html>
