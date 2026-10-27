@@ -1,0 +1,29 @@
+
+services:
+  - type: web
+    name: blue-premium
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn website:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: DISCORD_CLIENT_ID
+        sync: false
+      - key: DISCORD_CLIENT_SECRET
+        sync: false
+      - key: DISCORD_REDIRECT_URI
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_ID
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
