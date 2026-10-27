@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blue Premium</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="/">🔷 BLUE <span>PREMIUM</span></a>
+    {% if user %}
+      <a class="nav-button" href="/dashboard">Dashboard</a>
+    {% else %}
+      <a class="nav-button" href="/login">Mit Discord anmelden</a>
+    {% endif %}
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">EXKLUSIV FÜR DIE BLUE COMMUNITY</div>
+      <h1>Dein Bot.<br><span>Deine Vorteile.</span></h1>
+      <p class="lead">
+        Entdecke exklusive Premium-Funktionen und hole mehr aus Blue heraus.
+        Einfach mit Discord anmelden und loslegen.
+      </p>
+
+      <div class="price"><strong>0,99 €</strong><span>/ Monat</span></div>
+
+      {% if user %}
+        <a class="button" href="/dashboard">Zum Dashboard →</a>
+      {% else %}
+        <a class="button" href="/login">Mit Discord fortfahren →</a>
+      {% endif %}
+
+      <p class="muted">Monatliches Abo · Sicher über Stripe · Jederzeit kündbar</p>
+    </section>
+
+    <section class="features">
+      <div class="eyebrow">BLUE PREMIUM</div>
+      <h2>Deine Premium-Vorteile</h2>
+
+      <div class="grid">
+        {% for feature in features %}
+          <article class="feature">
+            <div class="check">✓</div>
+            <h3>{{ feature.name }}</h3>
+            <p>{{ feature.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© Blue Premium</span>
+    <span>Powered by Blue ⚡</span>
+  </footer>
+</body>
+</html>
