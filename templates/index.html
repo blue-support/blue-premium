@@ -1,61 +1,79 @@
 
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Blue Premium</title>
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-  <nav class="nav">
-    <a class="brand" href="/">🔷 BLUE <span>PREMIUM</span></a>
-    {% if user %}
-      <a class="nav-button" href="/dashboard">Dashboard</a>
-    {% else %}
-      <a class="nav-button" href="/login">Mit Discord anmelden</a>
-    {% endif %}
-  </nav>
+{% extends "base.html" %}
+{% block title %}Premium{% endblock %}
+{% block content %}
+<section class="hero shell">
+  <div>
+    <div class="eyebrow">● BLUE MEMBERSHIP · PREMIUM ACCESS</div>
+    <h1>Dein Server.<br><span class="gradient">Dein Upgrade.</span></h1>
+    <p class="lead">
+      Schalte exklusive Blue-Premium-Features frei.
+      Melde dich mit Discord an und verwalte deinen Zugang zentral.
+    </p>
+    <div class="actions">
+      <a class="button primary" href="{{ url_for('login') }}">Premium entdecken ↗</a>
+      <a class="button secondary" href="#features">Features ansehen ↓</a>
+    </div>
+    <p class="trust">✓ Sichere Zahlung über Stripe · Jederzeit kündbar</p>
+  </div>
 
-  <main>
-    <section class="hero">
-      <div class="eyebrow">EXKLUSIV FÜR DIE BLUE COMMUNITY</div>
-      <h1>Dein Bot.<br><span>Deine Vorteile.</span></h1>
-      <p class="lead">
-        Entdecke exklusive Premium-Funktionen und hole mehr aus Blue heraus.
-        Einfach mit Discord anmelden und loslegen.
-      </p>
+  <div class="visual">
+    <div class="premium-card">
+      <div class="card-top"><span>⚡ BLUE</span><span class="pill">● PREMIUM</span></div>
+      <div class="star">✦</div>
+      <h2>BLUE <span class="gradient">PREMIUM</span></h2>
+      <p>Mehr Möglichkeiten. Mehr Kontrolle.</p>
+      <hr>
+      <p>✓ Automatische Premium-Rolle</p>
+      <p>✓ Exklusive Features</p>
+      <p>✓ Flexible Abo-Verwaltung</p>
+      <hr>
+      <div class="price">0,99 € <small>/ Monat</small></div>
+    </div>
+    <div class="floating">⚡ Dein Premium-Upgrade ist bereit</div>
+  </div>
+</section>
 
-      <div class="price"><strong>0,99 €</strong><span>/ Monat</span></div>
+<section class="stats shell">
+  <div><b>0,99 €</b><span>pro Monat</span></div>
+  <div><b>24/7</b><span>Status-Synchronisierung</span></div>
+  <div><b>1 Klick</b><span>zur Verwaltung</span></div>
+  <div><b>Stripe</b><span>Sichere Zahlung</span></div>
+</section>
 
-      {% if user %}
-        <a class="button" href="/dashboard">Zum Dashboard →</a>
-      {% else %}
-        <a class="button" href="/login">Mit Discord fortfahren →</a>
-      {% endif %}
+<section id="features" class="section shell">
+  <div class="section-title">
+    <div class="eyebrow">WARUM PREMIUM?</div>
+    <h2>Mehr Blue. <span class="gradient">Weniger Aufwand.</span></h2>
+    <p>Alles läuft im Hintergrund – du konzentrierst dich auf deine Community.</p>
+  </div>
+  <div class="feature-grid">
+    <article class="feature">
+      <div class="feature-icon">✦</div>
+      <h3>Exklusive Features</h3>
+      <p>Erhalte Zugriff auf ausgewählte Premium-Funktionen von Blue.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">♙</div>
+      <h3>Automatische Rolle</h3>
+      <p>Nach erfolgreicher Zahlung synchronisiert der Bot deine Premium-Rolle.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon">↻</div>
+      <h3>Volle Kontrolle</h3>
+      <p>Verwalte deinen Abo-Status und kündige bequem im Dashboard.</p>
+    </article>
+  </div>
+</section>
 
-      <p class="muted">Monatliches Abo · Sicher über Stripe · Jederzeit kündbar</p>
-    </section>
-
-    <section class="features">
-      <div class="eyebrow">BLUE PREMIUM</div>
-      <h2>Deine Premium-Vorteile</h2>
-
-      <div class="grid">
-        {% for feature in features %}
-          <article class="feature">
-            <div class="check">✓</div>
-            <h3>{{ feature.name }}</h3>
-            <p>{{ feature.description }}</p>
-          </article>
-        {% endfor %}
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>© Blue Premium</span>
-    <span>Powered by Blue ⚡</span>
-  </footer>
-</body>
-</html>
+<section class="cta">
+  <div class="shell cta-inner">
+    <div>
+      <div class="eyebrow">DEIN NÄCHSTER SCHRITT</div>
+      <h2>Mach mehr aus Blue.</h2>
+      <p>Dein Premium-Zugang ist nur einen Klick entfernt.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('login') }}">Jetzt starten ↗</a>
+  </div>
+</section>
+{% endblock %}
