@@ -1,0 +1,44 @@
+
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <title>{% block title %}Blue Premium{% endblock %} · Blue ⚡</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark">⚡</span> Blue <span class="muted">Premium</span>
+    </a>
+    <nav>
+      <a href="{{ url_for('index') }}#features">Features</a>
+      {% if session.get('discord_user') %}
+        <a class="nav-button" href="{{ url_for('dashboard') }}">Dashboard ↗</a>
+        <form class="inline-form" method="post" action="{{ url_for('logout') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="nav-logout" type="submit">Abmelden</button>
+        </form>
+      {% else %}
+        <a class="nav-button" href="{{ url_for('login') }}">Mit Discord anmelden ↗</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="footer">
+    <span>⚡ Blue Premium</span>
+    <span>Powered by Blue ⚡</span>
+  </footer>
+</body>
+</html>
