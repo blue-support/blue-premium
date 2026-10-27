@@ -1,16 +1,20 @@
 
 import os
-from contextlib import contextmanager
 import psycopg
 from psycopg.rows import dict_row
 
 
 def connect():
-    url = os.getenv("DATABASE_URL")
-    if not url:
-        raise RuntimeError("DATABASE_URL ist nicht konfiguriert.")
+    url = os.getenv("DATABASE_URL", "").strip()
 
-    return psycopg.connect(url, row_factory=dict_row)
+    if not url:
+        raise RuntimeError("DATABASE_URL fehlt.")
+
+    return psycopg.connect(
+        url,
+        row_factory=dict_row,
+        connect_timeout=10,
+    )
 
 
 def init_database():
@@ -32,9 +36,4 @@ def init_database():
                 event_id TEXT PRIMARY KEY,
                 processed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
-        """)
-
-        conn.execute("""
-            CREATE INDEX IF NOT EXISTS premium_status_idx
-            ON premium_subscriptions(status, current_period_end)
         """)
