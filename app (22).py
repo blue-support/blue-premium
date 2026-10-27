@@ -18,19 +18,7 @@ from flask import Flask, abort, jsonify, redirect, render_template_string, reque
 # KONFIGURATION – HIER EINTRAGEN (KEINE ECHTEN KEYS COMMITTEN!)
 # ============================================================
 
-PREMIUM_BASE_URL = ""
 
-DISCORD_BOT_TOKEN = "MTU2NDU5NjU3NTczOTg0NjY2OA.G_LdUM.9qWVSavYVtaYJ5zaXXPIcqavQoS-x4wcrQZgMk"
-DISCORD_CLIENT_ID = "1564596575739846668"
-DISCORD_CLIENT_SECRET = "4Ds9OaWXpBUirsLdHnTBB06ns_lbmd3z"
-
-DISCORD_GUILD_ID = 1315795487063801916           # Server-ID als Zahl
-DISCORD_PREMIUM_ROLE_ID = 1508600436519731320     # Premium-Rollen-ID als Zahl
-DISCORD_LOG_CHANNEL_ID = 1564597181476904991       # Premium-Abo-Logs-Kanal-ID als Zahl
-
-STRIPE_SECRET_KEY = "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"
-STRIPE_WEBHOOK_SECRET = "whsec_iTY9wjHk4tUBv9afa05Sry0mhnAgmOAy"
-FLASK_SECRET_KEY = "1234567890-kuba1447pl1"
 
 PREMIUM_PRICE_CENTS = 99
 DATABASE_PATH = "blue_premium.sqlite3"
