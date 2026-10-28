@@ -1,13 +1,9 @@
+
 import os
 import secrets
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlencode
 
-from dotenv import load_dotenv
-load_dotenv()
-
-import requests
-import stripe
 from flask import (
     Flask,
     abort,
@@ -18,6 +14,12 @@ from flask import (
     session,
     url_for,
 )
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import requests
+import stripe
 
 from database import connect, init_database
 
@@ -37,6 +39,15 @@ app.config.update(
     SESSION_COOKIE_SAMESITE="Lax",
     PERMANENT_SESSION_LIFETIME=timedelta(days=7),
 )
+
+# ==================================================
+# 404 FEHLERSEITE
+# ==================================================
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
+
 
 # ==================================================
 # KONFIGURATION
@@ -329,7 +340,9 @@ def dashboard():
     try:
         member = discord_member(user["id"])
     except (requests.RequestException, RuntimeError):
-        app.logger.exception("Discord-Mitgliedschaft konnte nicht geprüft werden.")
+        app.logger.exception(
+            "Discord-Mitgliedschaft konnte nicht geprüft werden."
+        )
         flash("Discord ist momentan nicht erreichbar.", "error")
         member = None
 
@@ -371,7 +384,10 @@ def checkout():
         STRIPE_MONTHLY_PROMOTION_CODE_ID,
     ]):
         app.logger.error("Stripe-Konfiguration ist unvollständig.")
-        flash("Der Checkout ist noch nicht vollständig konfiguriert.", "error")
+        flash(
+            "Der Checkout ist noch nicht vollständig konfiguriert.",
+            "error",
+        )
         return redirect(url_for("dashboard"))
 
     try:
@@ -394,7 +410,7 @@ def checkout():
             )
             return redirect(url_for("dashboard"))
 
-        # Den Stripe-Kunden wiederverwenden, wenn bereits vorhanden.
+        # Stripe-Kunden wiederverwenden, wenn bereits vorhanden.
         customer_id = (
             existing_sub["stripe_customer_id"]
             if existing_sub and existing_sub["stripe_customer_id"]
@@ -436,12 +452,10 @@ def checkout():
         }
 
         # Den festen Promotion Code ausschließlich auf das Monatsabo anwenden.
-        # Stripe prüft, ob Coupon und Promotion Code gültig sind.
         if plan == "monthly":
             checkout_params["discounts"] = [
                 {
-                    "promotion_code":
-                        STRIPE_MONTHLY_PROMOTION_CODE_ID
+                    "promotion_code": STRIPE_MONTHLY_PROMOTION_CODE_ID
                 }
             ]
 
@@ -452,7 +466,9 @@ def checkout():
         return redirect(checkout_session.url, code=303)
 
     except requests.RequestException:
-        app.logger.exception("Discord-Mitgliedschaft konnte nicht geprüft werden.")
+        app.logger.exception(
+            "Discord-Mitgliedschaft konnte nicht geprüft werden."
+        )
         flash(
             "Discord ist gerade nicht erreichbar. Bitte erneut versuchen.",
             "error",
@@ -554,9 +570,7 @@ def stripe_webhook():
             subscription_id = obj.get("subscription")
 
             if user_id and subscription_id:
-                # Der Checkout-Abschluss allein ist kein Beweis,
-                # dass das Abo noch aktiv ist. Der endgültige Status
-                # wird durch die Subscription-Webhooks aktualisiert.
+                # Der endgültige Status wird durch Subscription-Webhooks aktualisiert.
                 conn.execute(
                     """
                     INSERT INTO premium_subscriptions
