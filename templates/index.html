@@ -1,67 +1,192 @@
-
 {% extends "base.html" %}
 {% block title %}Premium{% endblock %}
+
 {% block content %}
 <section class="hero shell">
   <div>
     <div class="eyebrow">● BLUE MEMBERSHIP · PREMIUM ACCESS</div>
-    <h1>Dein Server.<br><span class="gradient">Dein Upgrade.</span></h1>
+
+    <h1>
+      Dein Server.<br>
+      <span class="gradient">Dein Upgrade.</span>
+    </h1>
+
     <p class="lead">
       Schalte exklusive Blue-Premium-Features frei.
       Melde dich mit Discord an und verwalte deinen Zugang zentral.
     </p>
+
     <div class="actions">
-      <a class="button primary" href="{{ url_for('login') }}">Premium entdecken ↗</a>
-      <a class="button secondary" href="#features">Features ansehen ↓</a>
+      <a class="button primary" href="{{ url_for('login') }}">
+        Premium entdecken ↗
+      </a>
+      <a class="button secondary" href="#features">
+        Features ansehen ↓
+      </a>
     </div>
-    <p class="trust">✓ Sichere Zahlung über Stripe · Jederzeit kündbar</p>
+
+    <p class="trust">
+      ✓ Sichere Zahlung über Stripe · Jederzeit kündbar
+    </p>
   </div>
 
   <div class="visual">
     <div class="premium-card">
-      <div class="card-top"><span>⚡ BLUE</span><span class="pill">● PREMIUM</span></div>
+      <div class="card-top">
+        <span>⚡ BLUE</span>
+        <span class="pill">● PREMIUM</span>
+      </div>
+
       <div class="star">✦</div>
+
       <h2>BLUE <span class="gradient">PREMIUM</span></h2>
       <p>Mehr Möglichkeiten. Mehr Kontrolle.</p>
+
       <hr>
+
       <p>✓ Automatische Premium-Rolle</p>
       <p>✓ Exklusive Features</p>
       <p>✓ Flexible Abo-Verwaltung</p>
+
       <hr>
-      <div class="price">0,99 € <small>/ Monat</small></div>
+
+      <div class="price">
+        1,99 € <small>/ Monat</small>
+      </div>
+
+      <p class="trust">
+        Aktionspreis mit gültigem Rabatt: 0,49 €/Monat
+      </p>
     </div>
-    <div class="floating">⚡ Dein Premium-Upgrade ist bereit</div>
+
+    <div class="floating">
+      ⚡ Dein Premium-Upgrade ist bereit
+    </div>
   </div>
 </section>
 
 <section class="stats shell">
-  <div><b>0,99 €</b><span>pro Monat</span></div>
-  <div><b>24/7</b><span>Status-Synchronisierung</span></div>
-  <div><b>1 Klick</b><span>zur Verwaltung</span></div>
-  <div><b>Stripe</b><span>Sichere Zahlung</span></div>
+  <div>
+    <b>1,99 €</b>
+    <span>pro Monat</span>
+  </div>
+
+  <div>
+    <b>9,99 €</b>
+    <span>pro Jahr</span>
+  </div>
+
+  <div>
+    <b>24/7</b>
+    <span>Status-Synchronisierung</span>
+  </div>
+
+  <div>
+    <b>Stripe</b>
+    <span>Sichere Zahlung</span>
+  </div>
+</section>
+
+<section class="section shell">
+  <div class="section-title">
+    <div class="eyebrow">DEINE ABO-OPTIONEN</div>
+    <h2>Wähle dein <span class="gradient">Premium.</span></h2>
+    <p>
+      Entscheide dich für die Laufzeit, die am besten zu dir passt.
+      Die Buchung erfolgt sicher über Stripe.
+    </p>
+  </div>
+
+  <div class="feature-grid">
+    <article class="feature">
+      <div class="feature-icon">✦</div>
+      <h3>Monatsabo</h3>
+
+      <div class="price">
+        1,99 € <small>/ Monat</small>
+      </div>
+
+      <p>
+        Mit gültigem Aktionsrabatt zahlst du 0,49 € pro Monat.
+        Der Rabatt wird im Stripe-Checkout angewendet.
+      </p>
+
+      <a class="button primary" href="{{ url_for('login') }}">
+        Monatsabo wählen ↗
+      </a>
+    </article>
+
+    <article class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>Jahresabo</h3>
+
+      <div class="price">
+        9,99 € <small>/ Jahr</small>
+      </div>
+
+      <p>
+        Einmal jährlich abgerechnet. Der monatliche Aktionsrabatt
+        wird auf dieses Abo nicht angewendet.
+      </p>
+
+      <a class="button primary" href="{{ url_for('login') }}">
+        Jahresabo wählen ↗
+      </a>
+    </article>
+
+    <article class="feature">
+      <div class="feature-icon">↻</div>
+      <h3>Flexible Verwaltung</h3>
+
+      <p>
+        Verwalte deinen Abo-Status bequem im Dashboard.
+        Kündigungen gelten zum Ende des bezahlten Zeitraums.
+      </p>
+
+      <a class="button secondary" href="{{ url_for('login') }}">
+        Zum Dashboard ↗
+      </a>
+    </article>
+  </div>
 </section>
 
 <section id="features" class="section shell">
   <div class="section-title">
     <div class="eyebrow">WARUM PREMIUM?</div>
-    <h2>Mehr Blue. <span class="gradient">Weniger Aufwand.</span></h2>
-    <p>Alles läuft im Hintergrund – du konzentrierst dich auf deine Community.</p>
+
+    <h2>
+      Mehr Blue. <span class="gradient">Weniger Aufwand.</span>
+    </h2>
+
+    <p>
+      Alles läuft im Hintergrund – du konzentrierst dich auf deine Community.
+    </p>
   </div>
+
   <div class="feature-grid">
     <article class="feature">
       <div class="feature-icon">✦</div>
       <h3>Exklusive Features</h3>
-      <p>Erhalte Zugriff auf ausgewählte Premium-Funktionen von Blue.</p>
+      <p>
+        Erhalte Zugriff auf ausgewählte Premium-Funktionen von Blue.
+      </p>
     </article>
+
     <article class="feature">
       <div class="feature-icon">♙</div>
       <h3>Automatische Rolle</h3>
-      <p>Nach erfolgreicher Zahlung synchronisiert der Bot deine Premium-Rolle.</p>
+      <p>
+        Nach erfolgreicher Aktivierung synchronisiert der Bot
+        deine Premium-Rolle.
+      </p>
     </article>
+
     <article class="feature">
       <div class="feature-icon">↻</div>
       <h3>Volle Kontrolle</h3>
-      <p>Verwalte deinen Abo-Status und kündige bequem im Dashboard.</p>
+      <p>
+        Verwalte deinen Abo-Status und kündige bequem im Dashboard.
+      </p>
     </article>
   </div>
 </section>
@@ -73,7 +198,10 @@
       <h2>Mach mehr aus Blue.</h2>
       <p>Dein Premium-Zugang ist nur einen Klick entfernt.</p>
     </div>
-    <a class="button primary" href="{{ url_for('login') }}">Jetzt starten ↗</a>
+
+    <a class="button primary" href="{{ url_for('login') }}">
+      Jetzt starten ↗
+    </a>
   </div>
 </section>
 {% endblock %}
