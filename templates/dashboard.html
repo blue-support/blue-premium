@@ -1,3 +1,4 @@
+```html
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 
@@ -166,36 +167,29 @@
 
         {% if is_member %}
           <div class="checkout-options">
-            <form method="post" action="{{ url_for('checkout') }}">
-              <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-              >
-              <input type="hidden" name="plan" value="monthly">
+            <a
+              class="button primary"
+              href="https://buy.stripe.com/dRm8wQ5qM0FO0AQcLA0oM00"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Monatsabo wählen · 1,99 €/Monat ↗
+            </a>
 
-              <button class="button primary" type="submit">
-                Monatsabo wählen · 1,99 €/Monat ↗
-              </button>
-            </form>
-
-            <form method="post" action="{{ url_for('checkout') }}">
-              <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-              >
-              <input type="hidden" name="plan" value="yearly">
-
-              <button class="button secondary" type="submit">
-                Jahresabo wählen · 9,99 €/Jahr ↗
-              </button>
-            </form>
+            <a
+              class="button secondary"
+              href="https://buy.stripe.com/dRm7sM7yUfAI2IYcLA0oM01"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Jahresabo wählen · 9,99 €/Jahr ↗
+            </a>
           </div>
 
           <p class="muted">
-            Der Rabatt wird beim Monatsabo über Stripe angewendet, sofern
-            der konfigurierte Promotion Code gültig ist.
+            Die Zahlung wird sicher über Stripe abgewickelt.
+            Verfügbare Rabattcodes kannst du im Stripe-Checkout eingeben,
+            sofern die Code-Eingabe für den jeweiligen Zahlungslink aktiviert ist.
           </p>
 
         {% else %}
@@ -225,3 +219,4 @@
   </div>
 </section>
 {% endblock %}
+```
