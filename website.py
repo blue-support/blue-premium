@@ -381,8 +381,7 @@ def checkout():
         SITE_URL,
         STRIPE_MONTHLY_PRICE_ID,
         STRIPE_YEARLY_PRICE_ID,
-        STRIPE_MONTHLY_PROMOTION_CODE_ID,
-    ]):
+    ]) or (plan == "monthly" and not STRIPE_MONTHLY_PROMOTION_CODE_ID):
         app.logger.error("Stripe-Konfiguration ist unvollständig.")
         flash(
             "Der Checkout ist noch nicht vollständig konfiguriert.",
@@ -563,40 +562,82 @@ def stripe_webhook():
             return {"received": True}
 
         if event_type == "checkout.session.completed":
+            # Die Checkout-Session enthält die Discord-ID. Zusätzlich lesen wir
+            # die Subscription direkt aus Stripe, damit ein verspätetes
+            # checkout.session.completed kein aktives Abo auf inactive setzt.
             user_id = (
                 (obj.get("metadata") or {}).get("discord_user_id")
                 or obj.get("client_reference_id")
             )
             subscription_id = obj.get("subscription")
 
-            if user_id and subscription_id:
-                # Der endgültige Status wird durch Subscription-Webhooks aktualisiert.
-                conn.execute(
-                    """
-                    INSERT INTO premium_subscriptions
-                    (
-                        discord_user_id,
-                        stripe_customer_id,
-                        stripe_subscription_id,
-                        stripe_price_id,
-                        status,
-                        updated_at
-                    )
-                    VALUES (%s, %s, %s, %s, 'inactive', NOW())
-                    ON CONFLICT (discord_user_id) DO UPDATE SET
-                        stripe_customer_id = EXCLUDED.stripe_customer_id,
-                        stripe_subscription_id = EXCLUDED.stripe_subscription_id,
-                        stripe_price_id = EXCLUDED.stripe_price_id,
-                        status = 'inactive',
-                        updated_at = NOW()
-                    """,
-                    (
-                        int(user_id),
-                        obj.get("customer"),
-                        subscription_id,
-                        None,
-                    ),
+            if subscription_id:
+                subscription = stripe.Subscription.retrieve(subscription_id)
+                sub_metadata = subscription.get("metadata") or {}
+                user_id = (
+                    sub_metadata.get("discord_user_id")
+                    or user_id
                 )
+
+                if user_id:
+                    period_end = subscription.get("current_period_end")
+                    end_dt = (
+                        datetime.fromtimestamp(period_end, timezone.utc)
+                        if period_end
+                        else None
+                    )
+                    stripe_status = subscription.get("status", "inactive")
+                    status = (
+                        "active"
+                        if stripe_status in ("active", "trialing")
+                        else "inactive"
+                    )
+                    items = (subscription.get("items") or {}).get("data") or []
+                    price_id = (
+                        (items[0].get("price") or {}).get("id")
+                        if items
+                        else None
+                    )
+
+                    conn.execute(
+                        """
+                        INSERT INTO premium_subscriptions
+                        (
+                            discord_user_id,
+                            stripe_customer_id,
+                            stripe_subscription_id,
+                            stripe_price_id,
+                            status,
+                            current_period_end,
+                            cancel_at_period_end,
+                            updated_at
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())
+                        ON CONFLICT (discord_user_id) DO UPDATE SET
+                            stripe_customer_id = EXCLUDED.stripe_customer_id,
+                            stripe_subscription_id = EXCLUDED.stripe_subscription_id,
+                            stripe_price_id = EXCLUDED.stripe_price_id,
+                            status = EXCLUDED.status,
+                            current_period_end = EXCLUDED.current_period_end,
+                            cancel_at_period_end = EXCLUDED.cancel_at_period_end,
+                            updated_at = NOW()
+                        """,
+                        (
+                            int(user_id),
+                            subscription.get("customer") or obj.get("customer"),
+                            subscription_id,
+                            price_id,
+                            status,
+                            end_dt,
+                            bool(subscription.get("cancel_at_period_end")),
+                        ),
+                    )
+                else:
+                    app.logger.error(
+                        "Checkout-Webhook %s: keine Discord-ID für Subscription %s gefunden.",
+                        event.get("id"),
+                        subscription_id,
+                    )
 
         elif event_type.startswith("customer.subscription."):
             metadata = obj.get("metadata") or {}
