@@ -3,5 +3,6 @@ Flask
 requests
 stripe
 psycopg[binary]
+discord.py
 gunicorn
-dotenv
+python-dotenv
