@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="shell dashboard">
+  <aside class="sidebar">
+    <span class="eyebrow">CONTROL CENTER</span>
+    <a class="selected" href="#overview">◈ Übersicht</a>
+    <a href="#membership">✦ Mitgliedschaft</a>
+
+    <div class="sidebar-bottom">
+      <b>⚡ Blue Premium</b>
+      <small>Membership Portal</small>
+    </div>
+  </aside>
+
+  <div class="dash-main">
+    <div class="dash-head" id="overview">
+      <div>
+        <div class="eyebrow">BLUE CONTROL CENTER</div>
+        <h1>Dein Dashboard<span class="gradient">.</span></h1>
+        <p>Verwalte deinen Premium-Zugang und behalte alles im Blick.</p>
+      </div>
+
+      <div class="user">
+        {% if user.avatar %}
+          <img
+            src="https://cdn.discordapp.com/avatars/{{ user.id }}/{{ user.avatar }}.png?size=96"
+            alt="Discord Avatar"
+          >
+        {% else %}
+          <span class="avatar">{{ user.username[:1]|upper }}</span>
+        {% endif %}
+
+        <span>
+          <b>{{ user.username }}</b>
+          <small>Discord Account</small>
+        </span>
+      </div>
+    </div>
+
+    <div class="welcome">
+      <span class="pill">● MEMBER AREA</span>
+      <h2>Willkommen zurück, {{ user.username }}.</h2>
+      <p>Hier findest du deinen persönlichen Blue-Premium-Überblick.</p>
+    </div>
+
+    <div class="metrics">
+      <article class="metric">
+        <span>MITGLIEDSCHAFT</span>
+        <h2>{{ 'Aktiv' if active else 'Nicht aktiv' }}</h2>
+        <small>
+          {{ 'Premium ist freigeschaltet' if active else 'Kein aktives Premium-Abo' }}
+        </small>
+      </article>
+
+      <article class="metric">
+        <span>MONATSABO</span>
+        <h2>1,99 € <small>/ Monat</small></h2>
+        <small>Aktionspreis mit gültigem Rabattcode: 0,49 €</small>
+      </article>
+
+      <article class="metric">
+        <span>DISCORD-SERVER</span>
+        <h2>{{ 'Verbunden' if is_member else 'Nicht verbunden' }}</h2>
+        <small>
+          {{ 'Mitgliedschaft erkannt' if is_member else 'Serverbeitritt erforderlich' }}
+        </small>
+      </article>
+    </div>
+
+    <section class="panel" id="membership">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">DEIN PLAN</div>
+          <h2>Premium-Mitgliedschaft</h2>
+        </div>
+
+        <span class="pill {{ 'good' if active else 'warning' }}">
+          {{ '● Aktiv' if active else '○ Inaktiv' }}
+        </span>
+      </div>
+
+      {% if active %}
+        <div class="plan">
+          <div class="feature-icon">✦</div>
+
+          <div class="plan-copy">
+            <b>Blue Premium</b>
+            <p>Premium-Zugang für deinen Discord-Account.</p>
+
+            {% if sub and sub.current_period_end %}
+              <small>
+                Aktueller Zeitraum endet:
+                {{ sub.current_period_end.strftime('%d.%m.%Y') }}
+              </small>
+            {% endif %}
+
+            {% if sub and sub.cancel_at_period_end %}
+              <small>Deine Kündigung ist bereits vorgemerkt.</small>
+            {% endif %}
+          </div>
+
+          <strong>Premium<small>Mitgliedschaft</small></strong>
+        </div>
+
+        <div class="notice">
+          ✓ Dein Premium-Abo ist aktiv. Der Bot synchronisiert deine Rolle automatisch.
+        </div>
+
+        {% if sub and sub.cancel_at_period_end %}
+          <p class="muted">
+            Deine Kündigung ist vorgemerkt. Dein Zugang bleibt bis zum Ende
+            des bezahlten Zeitraums bestehen.
+          </p>
+        {% else %}
+          <form method="post" action="{{ url_for('cancel') }}">
+            <input
+              type="hidden"
+              name="csrf_token"
+              value="{{ csrf_token() }}"
+            >
+
+            <button
+              class="button danger"
+              type="submit"
+              onclick="return confirm('Abo zum Ende des bezahlten Zeitraums kündigen?')"
+            >
+              Abo kündigen
+            </button>
+          </form>
+        {% endif %}
+
+      {% else %}
+
+        <div class="plan">
+          <div class="feature-icon">✦</div>
+
+          <div class="plan-copy">
+            <b>Blue Premium – Monatsabo</b>
+            <p>Monatliche Abrechnung über Stripe.</p>
+            <small>Regulärer Preis: 1,99 € pro Monat</small>
+            <small>Aktionspreis bei gültigem Rabatt: 0,49 € pro Monat</small>
+          </div>
+
+          <strong>
+            1,99 €
+            <small>/ Monat</small>
+          </strong>
+        </div>
+
+        <div class="plan">
+          <div class="feature-icon">⚡</div>
+
+          <div class="plan-copy">
+            <b>Blue Premium – Jahresabo</b>
+            <p>Einmal jährlich abgerechnetes Abonnement.</p>
+            <small>9,99 € pro Jahr</small>
+          </div>
+
+          <strong>
+            9,99 €
+            <small>/ Jahr</small>
+          </strong>
+        </div>
+
+        {% if is_member %}
+          <div class="checkout-options">
+            <form method="post" action="{{ url_for('checkout') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="plan" value="monthly">
+              <button type="submit" class="button primary">
+                Monatsabo wählen · 1,99 €/Monat
+              </button>
+            </form>
+            <form method="post" action="{{ url_for('checkout') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="plan" value="yearly">
+              <button type="submit" class="button secondary">
+                Jahresabo wählen · 9,99 €/Jahr
+              </button>
+            </form>
+          </div>
+          <p class="muted">Ein gültiger Rabattcode kann beim Monatsabo im Stripe-Checkout eingegeben werden.</p>
+
+        {% else %}
+          <p class="muted">
+            Du musst zuerst dem Blue-Discord-Server beitreten.
+          </p>
+
+          <a
+            class="button secondary"
+            href="https://dsc.blue-lol.de"
+          >
+            Discord öffnen ↗
+          </a>
+
+          <p class="muted">
+            Falls der Link nicht zum Server-Einladungsdialog führt,
+            verwende deinen tatsächlichen Discord-Einladungslink.
+          </p>
+        {% endif %}
+      {% endif %}
+    </section>
+
+    <p class="fineprint">
+      Zahlungen werden über Stripe verarbeitet. Kündigungen gelten zum Ende
+      des bezahlten Zeitraums.
+    </p>
+  </div>
+</section>
+{% endblock %}
